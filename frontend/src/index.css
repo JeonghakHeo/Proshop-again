@@ -1,0 +1,47 @@
+main {
+  min-height: 80vh;
+}
+
+h1 {
+  padding: 1rem 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Carousel */
+.carousel-item-text,
+.carousel-item-prve,
+.carousel-item.active {
+  display: flex;
+}
+
+.carousel-caption {
+  position: absolute;
+  top: 0;
+}
+
+.carousel-caption h2 {
+  color: #fff;
+}
+
+.carousel img {
+  height: 300px;
+  margin: 40px;
+  padding: 30px;
+  border-radius: 50%;
+}
+
+.carousel a {
+  margin: 0 auto;
+}
+
+.pagination {
+  justify-content: center;
+  padding: 16px;
+}

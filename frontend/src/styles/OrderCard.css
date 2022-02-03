@@ -1,0 +1,15 @@
+.order-card h3 {
+  font-size: 1rem;
+}
+
+.order-card h4 {
+  font-size: 1.3rem;
+}
+
+.order-card span {
+  font-weight: 200;
+}
+
+.order-card .price {
+  font-weight: bold;
+}
