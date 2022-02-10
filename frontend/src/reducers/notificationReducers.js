@@ -4,6 +4,7 @@ import {
   SHOW_LOGOUT_NOTIFICATION,
   SHOW_DELETED_NOTIFICATION,
   HIDE_NOTIFICATION,
+  SHOW_EMAIL_NOT_FOUND_NOTIFICATION,
 } from '../constants/notificationConstants'
 
 const notificationReducer = (
@@ -12,6 +13,7 @@ const notificationReducer = (
     showAlready: false,
     showLogout: false,
     showDeleted: false,
+    showEmailNotFound: false,
   },
   action
 ) => {
@@ -40,12 +42,20 @@ const notificationReducer = (
         showDeleted: true,
       }
 
+    case SHOW_EMAIL_NOT_FOUND_NOTIFICATION:
+      return {
+        ...state,
+        showEmailNotFound: true,
+      }
+
     case HIDE_NOTIFICATION:
       return {
         showAdded: false,
         showAlready: false,
         showLogout: false,
         showDeleted: false,
+        showEmailNotFound: false,
+        showResendToken: false,
       }
     default:
       return state

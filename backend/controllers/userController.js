@@ -1,7 +1,8 @@
+import crypto from 'crypto'
 import asyncHandler from 'express-async-handler'
 import User from '../models/User.js'
 import generateToken from '../utils/generateToken.js'
-
+import sendEmail from '../utils/sendEmail.js'
 //  @route    POST /api/users/login
 //  @desc     Auth user & get token
 //  @access   Public
@@ -125,7 +126,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
     res.json({ message: 'user removed' })
   } else {
     res.status(404)
-    throw new Error('User not founc')
+    throw new Error('User not found')
   }
   res.json(users)
 })
@@ -167,4 +168,100 @@ export const updateUser = asyncHandler(async (req, res) => {
     res.status(404)
     throw new Error('User not found')
   }
+})
+
+// @route   POST /api/users/forgotpassword
+// @desc    Create a password reset token
+// @access  Public
+export const createResetToken = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email })
+
+  if (!user) {
+    res.status(404)
+    throw new Error(
+      'Sorry, we could not find the email. Please try with a correct email again.'
+    )
+  }
+
+  // Get reset token
+  const resetToken = user.getResetPasswordToken()
+
+  await user.save({ validateBeforeSave: true })
+
+  // Create reset Url
+  const resetUrl = `https://proshop-mern-0302.herokuapp.com/resetpassword/${resetToken}`
+
+  const message = `Hi ${user.name}, \n\n You are receiving this email because you have requested the reset of password. \n Click on this link to create a new password: \n\n ${resetUrl} \n\n If you didn't request a password reset, you can igonore this email. Your password will not be changed. \n\n PROSHOP Team`
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message,
+    })
+
+    res.status(200).json({ success: true, data: resetToken })
+  } catch (error) {
+    console.log(error)
+
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+
+    await user.save({ validateBeforeSave: false })
+
+    res.status(500)
+    throw new Error('Email could not be sent')
+  }
+})
+
+// @route   POST /api/users/forgotpassword/check
+// @desc    Check reset token
+// @access  Public
+export const checkResetToken = asyncHandler(async (req, res, next) => {
+  const { resetToken } = req.body
+
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  })
+
+  if (!resetToken) {
+    res.status(404)
+    throw new Error('Please enter the verification code.')
+  } else if (!user) {
+    res.status(400)
+    throw new Error('Sorry, the verification code is not correct or expired.')
+  }
+
+  res.status(200).json({ verified: true })
+})
+
+// @route   PUT /api/users/resetpassword
+// @desc    Reset password
+// @access  Public
+export const resetPassword = asyncHandler(async (req, res, next) => {
+  const { email, newPassword } = req.body
+
+  const user = await User.findOne({
+    email,
+    resetPasswordExpire: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    res.status(400)
+    throw new Error('Invalid token')
+  }
+
+  user.password = newPassword
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpire = undefined
+
+  await user.save()
+
+  res.status(200).json({ success: 'Password reset' })
 })

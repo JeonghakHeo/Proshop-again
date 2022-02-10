@@ -4,6 +4,7 @@ import {
   SHOW_LOGOUT_NOTIFICATION,
   SHOW_DELETED_NOTIFICATION,
   HIDE_NOTIFICATION,
+  SHOW_EMAIL_NOT_FOUND_NOTIFICATION,
 } from '../constants/notificationConstants'
 
 export const showAddedNotification = () => (dispatch) => {
@@ -45,6 +46,18 @@ export const showLogoutNotification = () => (dispatch) => {
 export const showDeletedNotification = () => (dispatch) => {
   try {
     dispatch({ type: SHOW_DELETED_NOTIFICATION })
+
+    setTimeout(() => {
+      dispatch({ type: HIDE_NOTIFICATION })
+    }, 3000)
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+export const showEmailNotFondNotification = () => (dispatch) => {
+  try {
+    dispatch({ type: SHOW_EMAIL_NOT_FOUND_NOTIFICATION })
 
     setTimeout(() => {
       dispatch({ type: HIDE_NOTIFICATION })

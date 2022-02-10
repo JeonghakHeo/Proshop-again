@@ -18,6 +18,8 @@ import OrderScreen from './screens/OrderScreen'
 import UserListScreen from './screens/UserListScreen'
 import UserEditScreen from './screens/UserEditScreen'
 import OrderListScreen from './screens/OrderListScreen'
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
+import ResetPasswordScreen from './screens/ResetPasswordScreen'
 
 const App = () => {
   return (
@@ -56,6 +58,8 @@ const App = () => {
               element={<HomeScreen />}
             />
             <Route path='/' element={<HomeScreen />} />
+            <Route path='/forgotpassword' element={<ForgotPasswordScreen />} />
+            <Route path='/resetpassword' element={<ResetPasswordScreen />} />
           </Routes>
         </Container>
       </main>

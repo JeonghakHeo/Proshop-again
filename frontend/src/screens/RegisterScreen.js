@@ -87,7 +87,7 @@ const RegisterScreen = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
-        <Button type='submit' varaint='primary'>
+        <Button type='submit' varaint='primary' style={{ width: '100%' }}>
           Sign Up
         </Button>
       </Form>

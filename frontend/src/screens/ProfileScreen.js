@@ -6,9 +6,12 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
-import { USER_DETAILS_RESET } from '../constants/userConstants'
+import {
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_RESET,
+} from '../constants/userConstants'
 import { listMyOrders } from '../actions/orderActions'
-// import OrderCard from '../components/OrderCard'
+import OrderCard from '../components/OrderCard'
 
 const ProfileScreen = () => {
   const [name, setName] = useState('')
@@ -33,14 +36,15 @@ const ProfileScreen = () => {
   const orderListMy = useSelector((state) => state.orderListMy)
   const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
 
-  // console.log(orders)
+  console.log(orders)
   useEffect(() => {
     // Not logged in
     if (!userInfo) {
       navigate('/login')
     } else {
       // No details
-      if (!user || !user.name) {
+      if (!user || !user.name || success) {
+        dispatch({ type: USER_UPDATE_PROFILE_RESET })
         dispatch({ type: USER_DETAILS_RESET })
         dispatch(getUserDetails('profile'))
         dispatch(listMyOrders())
@@ -49,7 +53,7 @@ const ProfileScreen = () => {
         setEmail(user.email)
       }
     }
-  }, [userInfo, navigate, dispatch, user, orders])
+  }, [userInfo, navigate, dispatch, user, orders, success])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -171,7 +175,24 @@ const ProfileScreen = () => {
         ) : orders.length === 0 ? (
           <Message>Your order is empty</Message>
         ) : (
-          <Table
+          orders.map((order) => (
+            <div key={Math.random()}>
+              <OrderCard order={order} />
+            </div>
+          ))
+        )}
+      </Col>
+    </Row>
+  )
+}
+
+export default ProfileScreen
+
+/* 
+  <Col md={9}>
+    <h2>My Orders</h2>
+      ** here **
+      <Table
             striped
             bordered
             hover
@@ -219,18 +240,6 @@ const ProfileScreen = () => {
               ))}
             </tbody>
           </Table>
-        )}
-      </Col>
-    </Row>
-  )
-}
-
-export default ProfileScreen
-
-/* 
-  <Col md={9}>
-    <h2>My Orders</h2>
-      ** here **
     </Col>
 
    

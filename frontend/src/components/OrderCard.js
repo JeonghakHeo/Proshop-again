@@ -8,6 +8,7 @@ import {
   Image,
   ListGroup,
   ListGroupItem,
+  Button,
 } from 'react-bootstrap'
 import '../styles/OrderCard.css'
 import Message from './Message'
@@ -27,7 +28,7 @@ const OrderCard = ({ order }) => {
                       <h3>ORDER DATE</h3>
                     </Row>
                     <Row>
-                      {/* <span>{order.createdAt.substring(0, 10)}</span> */}
+                      <span>{order.createdAt.substring(0, 10)}</span>
                     </Row>
                   </Col>
                   <Col md={6}>
@@ -66,6 +67,12 @@ const OrderCard = ({ order }) => {
                       <Link to={`/product/${order.orderItems[0]['product']}`}>
                         <h4>{order.orderItems[0]['name']}</h4>
                       </Link>
+                    </Row>
+                    <Row>
+                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                      Ex recusandae molestias corporis, dignissimos odio sunt
+                      laborum laudantium eum veritatis quam quo autem cumque
+                      omnis nisi!
                     </Row>
                     <Row>
                       {!order.isPaid ? (
@@ -109,6 +116,21 @@ const OrderCard = ({ order }) => {
                         $
                         {order.orderItems[0]['price'] *
                           order.orderItems[0]['qty']}
+                      </span>
+                    </Row>
+                    <Row className='mt-2'>
+                      <span>Paid: {order.isPaid ? 'paid' : 'not paid'}</span>
+                    </Row>
+                    <Row>
+                      <span>
+                        Delivered:{' '}
+                        {!order.isSent && !order.isDelivered
+                          ? 'not sent'
+                          : order.isSent && order.isDelivered
+                          ? 'on its way'
+                          : order.isSent && order.isDelivered
+                          ? 'delivered'
+                          : ''}
                       </span>
                     </Row>
                   </Col>

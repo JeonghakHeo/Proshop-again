@@ -23,6 +23,15 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_SEND_REST_PASSWORD_TOKEN_REQUEST,
+  USER_SEND_REST_PASSWORD_TOKEN_SUCCESS,
+  USER_SEND_REST_PASSWORD_TOKEN_FAIL,
+  USER_CHECK_RESET_PASSWORD_TOKEN_REQUEST,
+  USER_CHECK_RESET_PASSWORD_TOKEN_SUCCESS,
+  USER_CHECK_RESET_PASSWORD_TOKEN_FAIL,
+  USER_RESET_PASSWORD_REQUEST,
+  USER_RESET_PASSWORD_SUCCESS,
+  USER_RESET_PASSWORD_FAIL,
 } from '../constants/userConstants'
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
@@ -158,6 +167,10 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
       type: USER_UPDATE_PROFILE_SUCCESS,
       payload: data,
     })
+
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data })
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
@@ -254,8 +267,96 @@ export const updateUser = (user) => async (dispatch, getState) => {
     dispatch({
       type: USER_UPDATE_FAIL,
       payload:
-        error.response && error.response.data.msg
-          ? error.response.data.msg
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    })
+  }
+}
+
+export const sendResetToken = (email) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_SEND_REST_PASSWORD_TOKEN_REQUEST })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+
+    await axios.post(`/api/users/forgotpassword`, { email }, config)
+
+    dispatch({ type: USER_SEND_REST_PASSWORD_TOKEN_SUCCESS })
+
+    localStorage.setItem('resetEmail', JSON.stringify(email))
+  } catch (error) {
+    dispatch({
+      type: USER_SEND_REST_PASSWORD_TOKEN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    })
+  }
+}
+
+export const checkToken = (verificationCode) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_CHECK_RESET_PASSWORD_TOKEN_REQUEST })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    await axios.post(
+      `/api/users/forgotpassword/check`,
+      { resetToken: verificationCode },
+      config
+    )
+
+    dispatch({ type: USER_CHECK_RESET_PASSWORD_TOKEN_SUCCESS })
+
+    localStorage.setItem('verified', true)
+  } catch (error) {
+    dispatch({
+      type: USER_CHECK_RESET_PASSWORD_TOKEN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    })
+  }
+}
+
+export const resetPassword = (verified, newPassword) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_RESET_PASSWORD_REQUEST })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    if (verified) {
+      const email = JSON.parse(localStorage.getItem('resetEmail'))
+
+      await axios.put(
+        `/api/users/resetpassword`,
+        { email, newPassword },
+        config
+      )
+    }
+
+    dispatch({ type: USER_RESET_PASSWORD_SUCCESS })
+    localStorage.removeItem('resetEmail')
+    localStorage.removeItem('verified')
+  } catch (error) {
+    dispatch({
+      type: USER_RESET_PASSWORD_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
           : error.response,
     })
   }

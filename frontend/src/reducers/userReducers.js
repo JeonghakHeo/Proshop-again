@@ -13,6 +13,7 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
@@ -24,6 +25,16 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   USER_UPDATE_RESET,
+  USER_SEND_REST_PASSWORD_TOKEN_REQUEST,
+  USER_SEND_REST_PASSWORD_TOKEN_SUCCESS,
+  USER_SEND_REST_PASSWORD_TOKEN_FAIL,
+  USER_SEND_REST_PASSWORD_TOKEN_RESET,
+  USER_CHECK_RESET_PASSWORD_TOKEN_REQUEST,
+  USER_CHECK_RESET_PASSWORD_TOKEN_SUCCESS,
+  USER_CHECK_RESET_PASSWORD_TOKEN_FAIL,
+  USER_RESET_PASSWORD_REQUEST,
+  USER_RESET_PASSWORD_SUCCESS,
+  USER_RESET_PASSWORD_FAIL,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -91,6 +102,9 @@ export const userUpdateProfileReducer = (state = { user: {} }, action) => {
     case USER_UPDATE_PROFILE_FAIL:
       return { loading: false, error: action.payload }
 
+    case USER_UPDATE_PROFILE_RESET:
+      return {}
+
     default:
       return state
   }
@@ -150,6 +164,50 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
       return {
         user: {},
       }
+    default:
+      return state
+  }
+}
+
+export const userRestPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_SEND_REST_PASSWORD_TOKEN_REQUEST:
+    case USER_CHECK_RESET_PASSWORD_TOKEN_REQUEST:
+    case USER_RESET_PASSWORD_REQUEST:
+      return {
+        loading: true,
+      }
+
+    case USER_SEND_REST_PASSWORD_TOKEN_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+
+    case USER_CHECK_RESET_PASSWORD_TOKEN_SUCCESS:
+      return {
+        loading: false,
+        verified: true,
+      }
+
+    case USER_RESET_PASSWORD_SUCCESS:
+      return {
+        loading: false,
+        verified: true,
+        success: true,
+      }
+
+    case USER_SEND_REST_PASSWORD_TOKEN_FAIL:
+    case USER_CHECK_RESET_PASSWORD_TOKEN_FAIL:
+    case USER_RESET_PASSWORD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+
+    case USER_SEND_REST_PASSWORD_TOKEN_RESET:
+      return {}
+
     default:
       return state
   }

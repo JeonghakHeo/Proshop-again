@@ -53,7 +53,17 @@ const LoginScreen = () => {
         </Form.Group>
 
         <Form.Group controlId='password' className='mb-3'>
-          <Form.Label>Password</Form.Label>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Form.Label>Password</Form.Label>
+            <Form.Text className='text-muted'>
+              <Link to='/forgotpassword'>Forgot password?</Link>
+            </Form.Text>
+          </div>
           <Form.Control
             type='password'
             placeholder='Enter password'
@@ -62,7 +72,7 @@ const LoginScreen = () => {
           />
         </Form.Group>
 
-        <Button type='submit' varaint='primary'>
+        <Button type='submit' varaint='primary' style={{ width: '100%' }}>
           Sign In
         </Button>
       </Form>
