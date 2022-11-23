@@ -24,7 +24,7 @@ export const getProducts = asyncHandler(async (req, res) => {
       .limit(pageSize)
       .skip(pageSize * (page - 1))
     res.json({
-      message: 'no product found for the keyword, so we return alll result',
+      message: 'no product found for the keyword, so we return all result',
       products,
       page,
       pages: Math.ceil(countAll / pageSize),

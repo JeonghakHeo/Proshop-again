@@ -61,7 +61,6 @@ const ProductScreen = () => {
 
   const isItemInCart = cartItems.filter((item) => item.product === product._id)
 
-  console.log(isItemInCart)
   useEffect(() => {
     if (successProductReview) {
       window.alert('Review Submitted!')
